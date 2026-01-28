@@ -1,6 +1,9 @@
 seaborn
+pandas
+numpy
 matplotlib
 scikit-learn
 catboost
 xgboost
+dill
 #-e .

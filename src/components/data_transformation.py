@@ -2,6 +2,10 @@ import os
 import sys
 from dataclasses import dataclass
 
+# Add the project root directory to the Python path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, project_root)
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -9,8 +13,9 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer    
 
-from ..exception import CustomException
-from ..logger import logging
+from src.exception import CustomException
+from src.logger import logging
+from src.utils import save_object
 
 class DataTransformationConfig:
     preprocessor_obj_file_path = os.path.join('artifacts', 'preprocessor.pkl')
@@ -51,7 +56,7 @@ class DataTransformation:
 
             return preprocessor
         
-        except Exception as sys:
+        except Exception as e:
             raise CustomException(e,sys)
 
     def initiate_data_transformation(self, train_path, test_path):
@@ -83,6 +88,11 @@ class DataTransformation:
 
             logging.info('Saved preprocessing object')
 
+            save_object(
+                file_path = self.data_transformation_config.preprocessor_obj_file_path,
+                obj = preprocessor_obj
+            )
+            
             return (
                 train_arr,
                 test_arr,
